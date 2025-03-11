@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confronto - Due Grafici Interattivi</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" type="image/x-icon" href="icone/logo/btf.png">
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="icone/logo/btf.png" alt="BTF Logo" />
+      </div>
+      <div class="header-buttons">
+        <a href="index.html" class="btn btn-orange btn-small">Pagina iniziale</a>
+        <a href="attivita.html" class="btn btn-orange btn-small">Attività di raccolta</a>
+        <a href="confronto.html" class="btn btn-orange btn-small active">Vai al confronto</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- PRIMA SEZIONE FILTRI -->
+  <div class="filters">
+    <span class="circle green"></span>
+    <label for="regionSelect">Regione:</label>
+    <select id="regionSelect">
+      <option></option>
+      <option>Trentino</option>
+      <option>Veneto</option>
+      <option>Piemonte</option>
+    </select>
+
+    <label for="zoneSelect">Zona:</label>
+    <select id="zoneSelect">
+      <option></option>
+      <option>Zona 1</option>
+      <option>Zona 2</option>
+      <option>Zona 3</option>
+    </select>
+
+    <label for="nodeSelect">Nodo:</label>
+    <select id="nodeSelect">
+      <option></option>
+      <option>Ristorazione</option>
+      <option>De spar</option>
+      <option>Mense scolastiche</option>
+    </select>
+
+    <label for="mensaSelect">Mensa 1:</label>
+    <select id="mensaSelect">
+      <option value=""></option>
+      <option value="Povo_1">Povo 1</option>
+      <option value="Povo_2">Povo 2</option>
+      <option value="BLM-ADIGE_SALA">BLM-ADIGE_SALA</option>
+    </select>
+
+    <!-- TIMEFRAME UNICO -->
+    <label for="timeframeStart">Da:</label>
+    <input type="date" id="timeframeStart">
+    <label for="timeframeEnd">A:</label>
+    <input type="date" id="timeframeEnd">
+  </div>
+
+  <!-- SECONDA SEZIONE FILTRI -->
+  <div class="filters">
+    <span class="circle blue"></span>
+    <label for="regionSelect_2">Regione:</label>
+    <select id="regionSelect_2">
+      <option></option>
+      <option>Trentino</option>
+      <option>Veneto</option>
+      <option>Piemonte</option>
+    </select>
+  
+    <label for="zoneSelect_2">Zona:</label>
+    <select id="zoneSelect_2">
+      <option></option>
+      <option>Zona 1</option>
+      <option>Zona 2</option>
+      <option>Zona 3</option>
+    </select>
+
+    <label for="nodeSelect_2">Nodo:</label>
+    <select id="nodeSelect_2">
+      <option></option>
+      <option>Ristorazione</option>
+      <option>De spar</option>
+      <option>Mense scolastiche</option>
+    </select>
+
+    <label for="mensaSelect_2">Mensa 2:</label>
+    <select id="mensaSelect_2">
+      <option value=""></option>
+      <option value="Povo_1">Povo 1</option>
+      <option value="Povo_2">Povo 2</option>
+      <option value="BLM-ADIGE_SALA">BLM-ADIGE_SALA</option>
+    </select>
+
+    <!-- BOTTONE FILTRI -->
+    <a href="#stackedChart" class="apply-filters" id="applyFiltersBtn">Applica filtri</a>
+  </div>
+
+  <h2>Totale KG raccolti</h2>
+  <!-- GRAFICO STACKED (SOPRA) -->
+  <section>
+    <canvas id="stackedChart"></canvas>
+  </section>
+  <br>
+  <br>
+  <h2>Numero di donazioni</h2>
+  <!-- GRAFICO SEMPLICE (SOTTO) -->
+  <section id="chart-section">
+    <canvas id="myChart"></canvas>
+  </section>
+
+<script>
+/* ====================================================
+   DATI PER IL GRAFICO SEMPLICE (myChart)
+==================================================== */
+const mensaSimpleData = {
+  "Povo_1": [10, 15, 22, 5, 14, 27, 30, 20, 12, 9, 16, 25],
+  "Povo_2": [5, 18, 27, 9, 14, 30, 28, 10, 3, 16, 23, 11],
+  "BLM-ADIGE_SALA": [10, 10, 15, 7, 12, 5, 6, 15, 29, 2, 14, 17]
+};
+
+/* ====================================================
+   DATI PER IL GRAFICO STACKED (stackedChart)
+==================================================== */
+const mensaStackedData = {
+  "Povo_1": {
+    "Primi":   [15, 10, 5, 12,  7, 18, 20,  8, 15, 20, 22, 17],
+    "Secondi": [5,  3, 10, 14, 19, 20,  4, 12, 22,  3,  8, 15],
+    "Contorni":[3,  8, 11,  0, 10, 12,  9, 18,  2, 15,  6,  5],
+    "Insalata":[9, 10, 18,  9, 15,  1,  6,  7,  5,  8,  9, 19],
+    "Salumi":  [5,  6, 12, 15,  3,  0,  4,  2, 16, 18, 22, 10],
+    "Pane":    [7,  8,  6,  5, 10, 22,  1, 11,  3,  6,  7, 21],
+    "Varie":   [2,  4,  8,  6,  9,  7,  5,  6, 12,  4,  2,  6]
+  },
+  "Povo_2": {
+    "Primi":   [10, 12,  5, 22, 18, 11, 15, 19,  4, 16,  5, 13],
+    "Secondi": [4,  8, 19,  8,  2, 17, 10, 21,  3,  5, 22,  9],
+    "Contorni":[2,  0, 11,  5,  7, 15,  3, 12, 18, 18,  6,  4],
+    "Insalata":[4, 15,  7, 13,  9, 10, 22, 10,  7,  0,  3,  1],
+    "Salumi":  [10,  2,  5,  6, 19,  3,  0,  5, 11,  2, 10, 12],
+    "Pane":    [6, 20, 11,  7,  3,  8, 19, 12,  6,  4,  1,  7],
+    "Varie":   [8, 12, 15,  9,  2,  6,  9,  1,  3,  8, 14,  8]
+  },
+  "BLM-ADIGE_SALA": {
+    "Primi":   [9, 13, 10,  7,  5,  8,  6, 12,  2, 15,  9, 19],
+    "Secondi": [14, 5,  3,  9, 10, 11, 22,  4, 12, 17,  1,  2],
+    "Contorni":[5,  2,  9, 11,  3, 21,  7,  0, 15,  3,  9,  5],
+    "Insalata":[0,  7,  2, 19, 22,  3,  4,  5,  9, 12,  6, 12],
+    "Salumi":  [6,  6, 20,  5, 11, 15,  5,  5,  2,  9, 18,  3],
+    "Pane":    [10, 4,  1, 12,  8,  6, 14, 18, 17,  1,  3,  7],
+    "Varie":   [2,  9,  8,  6,  5,  4,  9,  6, 10, 10, 22, 15]
+  }
+};
+
+const allMonths = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+
+/* Calcola indici da 0..11 in base al timeframe */
+function calcolaRangeMesi(dataStartStr, dataEndStr) {
+  if (!dataStartStr || !dataEndStr) return { fromIndex: 0, toIndex: 11 };
+  const startDate = new Date(dataStartStr);
+  const endDate   = new Date(dataEndStr);
+  if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
+    return { fromIndex: 0, toIndex: 11 };
+  }
+  let fromIndex = startDate.getMonth();
+  let toIndex   = endDate.getMonth();
+  if (fromIndex > toIndex) [fromIndex, toIndex] = [toIndex, fromIndex];
+  return { fromIndex, toIndex };
+}
+
+// Per il grafico semplice: estrae l'array di numeri [fromIndex..toIndex]
+function estraiValoriSimple(mensaKey, fromIndex, toIndex) {
+  if (!mensaKey || !mensaSimpleData[mensaKey]) {
+    return Array(toIndex - fromIndex + 1).fill(0);
+  }
+  return mensaSimpleData[mensaKey].slice(fromIndex, toIndex + 1);
+}
+
+/* Genera dataset per il grafico stacked (7 categorie, stack 0 e 1) */
+function generaStackedDatasets(mensa1, mensa2, fromIndex, toIndex) {
+  const CATEGORIES = ['Primi','Secondi','Contorni','Insalata','Salumi','Pane','Varie'];
+  const ds = [];
+
+  // Mensa 1: categorie -> stack 0
+  CATEGORIES.forEach((cat, i) => {
+    const color1 = [
+      'rgba(26, 89, 3, 0.7)', //primi
+      'rgba(38, 125, 6, 0.7)', //secondi
+      'rgba(55, 176, 11, 0.7)', //contorni
+      'rgba(64, 201, 14, 0.7)', //insalata
+      'rgba(105, 252, 50, 0.7)', //salumi
+      'rgba(177, 252, 149, 0.7)', //pane
+      'rgba(220, 221, 224, 0.7)' //varie
+    ][i];
+    const dataArray = (mensa1 && mensaStackedData[mensa1] && mensaStackedData[mensa1][cat])
+      ? mensaStackedData[mensa1][cat].slice(fromIndex, toIndex+1)
+      : Array(toIndex - fromIndex +1).fill(0);
+
+    ds.push({
+      label: (mensa1 ? `${cat}_${mensa1}` : `${cat}_vuoto`),
+      data: dataArray,
+      backgroundColor: color1,
+      stack: 'Stack 0'
+    });
+  });
+
+  // Mensa 2: categorie -> stack 1
+  CATEGORIES.forEach((cat, i) => {
+    const color2 = [
+      'rgba(4, 84, 135, 0.7)',//primi
+           'rgba(5, 107, 173, 0.7)', //secondi
+           'rgba(5, 142, 232, 0.7)', //contorni
+           'rgba(40, 168, 252, 0.7)',//insalata
+           'rgba(104, 190, 247, 0.7)', //salumi
+           'rgba(166, 219, 255, 0.7)', //pane
+           'rgba(178, 180, 184, 0.7)' //varie
+
+    ][i];
+    const dataArray = (mensa2 && mensaStackedData[mensa2] && mensaStackedData[mensa2][cat])
+      ? mensaStackedData[mensa2][cat].slice(fromIndex, toIndex+1)
+      : Array(toIndex - fromIndex +1).fill(0);
+
+    ds.push({
+      label: (mensa2 ? `${cat}_${mensa2}` : `${cat}_vuoto`),
+      data: dataArray,
+      backgroundColor: color2,
+      stack: 'Stack 1'
+    });
+  });
+
+  return ds;
+}
+
+let stackedChart = null;
+let simpleChart  = null;
+
+// Crea / Aggiorna grafico stacked
+function creaOaggiornaStackedChart(labels, datasets) {
+  if (stackedChart) stackedChart.destroy();
+
+  const totalLabels = {
+    id: 'totalLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx, data, scales: { x, y } } = chart;
+      ctx.save();
+      ctx.font = 'bold 14px Arial';
+      ctx.fillStyle = 'black';
+      ctx.textAlign = 'center';
+
+      function getVisibleStackDatasets(stack) {
+        return data.datasets.filter(d => {
+          const meta = chart.getDatasetMeta(data.datasets.indexOf(d));
+          return d.stack === stack && !meta.hidden;
+        });
+      }
+      data.labels.forEach((label, index) => {
+        const stack0 = getVisibleStackDatasets('Stack 0');
+        if (stack0.length) {
+          const sum0 = stack0.reduce((acc, d) => acc + d.data[index], 0);
+          const meta0 = chart.getDatasetMeta(data.datasets.indexOf(stack0[0]));
+          const bar0 = meta0.data[index];
+          if (bar0) {
+            ctx.fillText(sum0, bar0.x, y.getPixelForValue(sum0) - 10);
+          }
+        }
+        const stack1 = getVisibleStackDatasets('Stack 1');
+        if (stack1.length) {
+          const sum1 = stack1.reduce((acc, d) => acc + d.data[index], 0);
+          const meta1 = chart.getDatasetMeta(data.datasets.indexOf(stack1[0]));
+          const bar1 = meta1.data[index];
+          if (bar1) {
+            ctx.fillText(sum1, bar1.x, y.getPixelForValue(sum1) - 10);
+          }
+        }
+      });
+      ctx.restore();
+    }
+  };
+
+  stackedChart = new Chart(document.getElementById('stackedChart'), {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      plugins: {
+        title: { display: true, text: 'Confronto Kg raccolti' },
+        legend: {
+          position: 'right', // legenda verticale a destra
+          onClick: (e, legendItem, legend) => {
+            const chart = legend.chart;
+            const meta = chart.getDatasetMeta(legendItem.datasetIndex);
+            meta.hidden = !meta.hidden;
+            chart.update();
+          }
+        }
+      },
+      responsive: true,
+      interaction: { intersect: false },
+      scales: {
+        x: { stacked: true, offset: true },
+        y: { stacked: true, beginAtZero: true }
+      }
+    },
+    plugins: [totalLabels]
+  });
+}
+
+// Crea / Aggiorna grafico semplice (COLORI RICHIESTI)
+function creaOaggiornaSimpleChart(labels, datasets) {
+  if (simpleChart) simpleChart.destroy();
+  const ctx = document.getElementById('myChart').getContext('2d');
+  simpleChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Confronto Donazioni'
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Inizializza con tutti i mesi e nessun dataset
+  creaOaggiornaStackedChart(allMonths, []);
+  creaOaggiornaSimpleChart(allMonths, []);
+
+  document.getElementById('applyFiltersBtn').addEventListener('click', () => {
+    const mensa1 = document.getElementById('mensaSelect').value;
+    const mensa2 = document.getElementById('mensaSelect_2').value;
+
+    const timeStart = document.getElementById('timeframeStart').value;
+    const timeEnd   = document.getElementById('timeframeEnd').value;
+    const { fromIndex, toIndex } = calcolaRangeMesi(timeStart, timeEnd);
+    const labels = allMonths.slice(fromIndex, toIndex+1);
+
+    // GRAFICO STACKED
+    const stackedDatasets = generaStackedDatasets(mensa1, mensa2, fromIndex, toIndex);
+    creaOaggiornaStackedChart(labels, stackedDatasets);
+
+    // GRAFICO SEMPLICE: 2 dataset => M1 verde, M2 blu
+    const simpleDatasets = [];
+    if (mensa1) {
+      const data1 = estraiValoriSimple(mensa1, fromIndex, toIndex);
+      simpleDatasets.push({
+        label: mensa1,
+        data: data1,
+        backgroundColor: 'rgba(102, 247, 49, 0.7)' // VERDE
+      });
+    }
+    if (mensa2) {
+      const data2 = estraiValoriSimple(mensa2, fromIndex, toIndex);
+      simpleDatasets.push({
+        label: mensa2,
+        data: data2,
+        backgroundColor: 'rgba(54, 162, 235, 0.7)' // BLU
+      });
+    }
+    creaOaggiornaSimpleChart(labels, simpleDatasets);
+  });
+});
+</script>
+<br>
+<br>
+<h2>Metriche approfondite</h2>
+<!-- Aggiungi questo dopo le sezioni dei grafici -->
+<div class="metrics-container">
+  <!-- Box 1 -->
+  <div class="metric-box">
+    <table>
+      <tr><td>Donazioni totali</td><td>3.81 ML</td></tr>
+      <tr><td>Acqua non sprecata</td><td>3.81 ML</td></tr>
+      <tr><td>Distanza percorsa</td><td>2570 Km</td></tr>
+      <tr><td>CO2 non sprecata</td><td>3.81 Ton</td></tr>
+    </table>
+  </div>
+
+  <!-- Box 2 -->
+  <div class="metric-box2">
+    <table>
+      <tr><td>Donazioni totali</td><td>3.81 ML</td></tr>
+      <tr><td>Acqua non sprecata</td><td>3.81 ML</td></tr>
+      <tr><td>Distanza percorsa</td><td>2570 Km</td></tr>
+      <tr><td>CO2 non sprecata</td><td>3.81 Ton</td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

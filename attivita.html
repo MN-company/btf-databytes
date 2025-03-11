@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="icon" type="image/x-icon" href="icone/logo/btf.png">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- jQuery (Select2 richiede jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <title>Attività di Raccolta</title>
+    <style>
+    /* ===============================
+    MODALE E TIMELINE
+    =============================== */
+
+    /* Overlay scuro e contenuto modale */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none; /* nascosto di default */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+  
+.modal-content {
+    background: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+  
+  .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+  }
+  
+  /* Icona (ℹ️) cliccabile per aprire il modale */
+  .info-trigger {
+    cursor: pointer;
+  }
+  
+  /* Timeline verticale */
+  .vertical-timeline {
+    position: relative;
+    margin: 1rem 0;
+    padding: 0;
+    /* Se desideri un bordo continuo a sinistra: border-left: 2px solid #ddd; */
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin: 1rem 0;
+    padding-left: 40px; /* spazio a sinistra per il pallino */
+  }
+  
+  .timeline-icon {
+    position: absolute;
+    left: 0; 
+    top: 0.8rem; /* regola per centrare il pallino verticalmente */
+    width: 15px;
+    height: 15px;
+    background-color: #f4a108; /* colore del pallino */
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #f4a108;
+  }
+  
+  /* Linea tratteggiata/continua dietro i pallini */
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 7px; /* allineato col centro del pallino */
+    top: -1rem;
+    width: 2px;
+    height: calc(100% + 2rem);
+    background: #ccc; /* colore della linea */
+    z-index: -1;
+  }
+  
+  /* Nasconde la linea nel primo item, se non vuoi che parta dall'alto */
+  .timeline-item:first-child::before {
+    top: 0;
+    height: calc(100% + 1rem);
+  }
+  
+  /* Contenuto testuale (riquadro grigio chiaro) a destra del pallino */
+  .timeline-content {
+    background-color: #f9f9f9;
+    padding: 0.5rem 0.8rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .timeline-content h4 {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .timeline-content p {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* ===============================
+     SELETTORI, SELECT2 E RESET
+  =============================== */
+  
+  .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    color: #000 !important;  /* Usa un colore scuro */
+    background-color: transparent;
+  }
+  
+  /* Se usi un wrapper custom per i select nativi (opzionale) */
+  .custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  .custom-select-wrapper select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ffa200;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .custom-select-wrapper::after {
+    content: '\25BC'; /* Freccia ▼ */
+    position: absolute;
+    top: 50%;
+    right: 50px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #999;
+  }
+  
+  /* ===============================
+     TABELLE
+  =============================== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  /* Se la prima colonna (Stato) deve essere più stretta */
+  th:first-child, td:first-child {
+    width: 5%;
+  }
+  th:not(:first-child), td:not(:first-child) {
+    width: 31.666%;
+  }
+  
+  /* Per nascondere l'altra tabella */
+  .tabella-nascosta {
+    display: none;
+  }
+  
+  /* Colorazione sfondo TD */
+  .red    { background-color: #d9534f; }
+  .yellow { background-color: #f0ad4e; }
+  .green  { background-color: #5cb85c; }
+  
+  /* ===============================
+     STRUTTURA BASE
+  =============================== */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+  }
+  
+  .container {
+    width: 90%;
+    margin: 20px auto;
+  }
+  
+  /* Contenitore “donatori-riceventi” */
+  .donatori-riceventi {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* ===============================
+     NOTIFICHE
+  =============================== */
+  .notifiche {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-left: 4px solid #f4a108;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-width: 600px;
+  }
+  
+  .notifiche h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+  
+  .notifiche ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  .notifiche li {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 4px;
+    flex: 1;                              /* Occupa lo spazio rimanente */
+
+  }
+  
+  .notifiche li:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .notifiche li em {
+    font-style: italic;
+    color: #555;
+  }
+  .notifications-and-stats {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 0;              /* Nessuno spazio orizzontale fra le 2 colonne */
+    width: 100vw;        /* Occupa tutta la viewport (se desideri) */
+    height: 40vh;       /* Se vuoi riempire l’altezza dello schermo */
+    box-sizing: border-box;
+  }
+  
+  /* Colonna di sinistra (Notifiche) */
+  .notifiche {
+    background: #fff;
+    box-sizing: border-box;
+    padding: 1rem;  /* Spazio interno */
+    overflow-y: auto; /* Se preferisci scroll se il contenuto è lungo */
+  }
+  
+  /* ===============================
+     BARRA FILTRI E BOTTONI
+  =============================== */
+  .pulsante {
+    background: transparent;
+    border: 2px solid #f4a108; /* Arancione acceso */
+    color: #333;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none; 
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .pulsante:hover {
+    background-color: #f4a108;
+    color: #fff;
+  }
+  
+  /* ===============================
+     TABELLA CONTROLS / RICERCA
+  =============================== */
+  /* Contenitore orizzontale per i controlli (download, select, ricerca) */
+  .table-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* elementi da sx a dx */
+    gap: 1rem;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  
+  /* Pulsanti finti di download */
+  .fake-downloads {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  /* Barra di ricerca allineata a destra */
+  .table-search {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto; /* Spinge la ricerca verso dx */
+  }
+  .table-search label {
+    font-weight: 600;
+  }
+  .search-input {
+    background: transparent;
+    border: 2px solid #f4a108;
+    color: #333;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+  .search-input::placeholder {
+    color: #999;
+  }
+  .search-input:focus {
+    outline: none;
+    background-color: #fff;
+  }
+  
+  /* ===============================
+     STATISTICHE (Riquadri)
+  =============================== */
+
+ /* Riquadri statistici a destra: griglia 2x2 */
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* 2 colonne */
+    grid-template-rows: 1fr 1fr;     /* 2 righe per i 4 box */
+    gap: 10px;                          /* Nessuno spazio fra i box */
+    box-sizing: 50px;
+    background: #fafafa;
+    padding: 1rem;
+    overflow-y: auto; /* scroll se i box superano l’altezza */
+  }
+  
+  /* Singolo riquadro statistica */
+  .stat-box {
+    background: #fff;
+    border: 1px solid #f4a108;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    padding: 1rem;
+    display:block;
+    flex-direction:row;
+    justify-content: center;
+  }
+  
+  /* Icona centrata */
+  .icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .icon-wrapper img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Titolo e testo */
+  .stat-box h4 {
+    margin: 0.5rem 0 0.3rem;
+    font-size: 1rem;
+    color: #333;
+  }
+  .stat-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Parte sinistra: Logo, Pulsanti -->
+        <div class="header-left">
+          <div class="logo">
+            <img src="/icone/logo/btf.png" alt="BTF Logo" />
+          </div>
+          <div class="header-buttons">
+            <a href="index.html" class="btn btn-orange btn-small ">Pagina iniziale</a>
+            <a href="attivita.html" class="btn btn-orange btn-small active">Attività di raccolta</a>
+            <a href="confronto.html" class="btn btn-orange btn-small">Vai al confronto</a>
+          </div>
+        </div>
+    </header>
+  <div class="filters">
+    <label for="text filter">Regione:</label>
+    <select id="regionSelect" title="Seleziona Regione">
+      <option></option>
+      <option>Trentino</option>
+      <option>Veneto</option>
+      <option>Piemonte</option>
+    </select>
+
+    <label for="zoneSelect">Zona:</label>
+    <select id="zoneSelect">
+      <option></option>
+      <option>Zona 1</option>
+      <option>Zona 2</option>
+      <option>Zona 3</option>
+    </select>
+
+    <label for="nodeSelect">Nodo:</label>
+    <select id="nodeSelect">
+      <option></option>
+      <option>Ristorazione</option>
+      <option>De spar</option>
+      <option>Mense scolastiche</option>
+    </select>
+
+    <label class="datiGrafico" for="datiGrafico">Donatori:</label>
+    <select id="datiGrafico" multiple>
+            <option>Povo 1</option>
+            <option>Povo 2</option>
+            <option>BLM - ADIGE SALA</option>
+    </select>
+    <label for="timeframeSelect">Da:</label>
+    <input type="date" id="timeframeSelect">
+    
+    <label for="timeframeSelect">A:</label>
+    <input type="date" id="timeframeSelect">
+    <a class="apply-filters">Applica filtri</a>
+  </div>
+  <!-- Contenitore flex: Notifiche a sx, Statistiche a dx -->
+<div class="notifications-and-stats">
+  
+    <!-- Sezione Notifiche (SINISTRA) -->
+    <div class="notifiche">
+      <h3>Notifiche</h3>
+      <ul>
+        <li>🟡 Hai una nuova donazione da parte di Ristorante Universitario Povo 1.</li>
+        <li>⚫ Il giro di raccolta è in corso.</li>
+        <li>🟢 Donazione da parte di BLM- ADIGE SALA è andata a buon fine.</li>
+        <li>🔴 Donazione da parte di Ristorante Universitario Mesiano non è andata a buon fine.</li>
+      </ul>
+    </div>
+  
+    <!-- 4 riquadri statistici (DESTRA), in 2 colonne -->
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="icon-wrapper">
+          <img src="icone/Ai/all.png" alt="Icona Donazioni" />
+        </div>
+        <h4>Totale Donazioni</h4>
+        <p>150</p>
+      </div>
+  
+      <div class="stat-box">
+        <div class="icon-wrapper">
+          <img src="icone/Ai/kili.png" alt="Icona Peso" />
+        </div>
+        <h4>Totale Kg Raccolti</h4>
+        <p>3200 Kg</p>
+      </div>
+  
+      <div class="stat-box">
+        <div class="icon-wrapper">
+          <img src="icone/Ai/one.png" alt="Icona Top Donatore" />
+        </div>
+        <h4>Donatore più attivo</h4>
+        <p>Ristorante La Buona Tavola</p>
+      </div>
+  
+      <div class="stat-box">
+        <div class="icon-wrapper">
+          <img src="icone/Ai/food.png" alt="Icona Cibo" />
+        </div>
+        <h4>Categoria più recuperata</h4>
+        <p>Pane e derivati</p>
+      </div>
+    </div>
+  
+  </div>
+    
+        <!-- Overlay + contenuto modale -->
+        <div class="modal-overlay" id="modalStorico">
+            <div class="modal-content">
+            <!-- Pulsante di chiusura -->
+            <button class="modal-close" data-close="modalStorico">×</button>
+            <h3>Storico Donazioni</h3>
+        
+            <!-- Timeline verticale -->
+            <div class="vertical-timeline">
+                <!-- Primo evento -->
+                <div class="timeline-item">
+                <div class="timeline-icon"></div>
+                <div class="timeline-content">
+                    <h4>Giorno 01/03/2025 → 9 Kg</h4>
+                    <p>Categorie: Primi</p>
+                    <p>Nome del piatto: Mezzemaniche Crema Di Peperoni E Ricotta</p>
+                </div>
+                </div>
+                <!-- Secondo evento -->
+                <div class="timeline-item">
+                <div class="timeline-icon"></div>
+                <div class="timeline-content">
+                    <h4>Giorno 28/02/2025 → 5 Kg</h4>
+                    <p>Categorie: Contorni</p>
+                    <p>Nome del piatto: Broccoli Al Vapore</p>
+                </div>
+                </div>
+                <!-- Aggiungi altri eventi -->
+            </div>
+            </div>
+        </div>
+  
+  <!-- Controlli e tabella -->
+  
+  
+        <div class="donatori-riceventi">
+            <div class="table-controls">
+                <!-- Select in stile pulsante arancione -->
+                <select id="selettoreTabella" class="pulsante" title="Seleziona tabella">
+                  <option value="donatori">Donatori</option>
+                  <option value="riceventi">Riceventi</option>
+                </select> 
+                <div class="fake-downloads">
+                    <button class="pulsante">Scarica CSV</button>
+                    <button class="pulsante">Scarica PDF</button>
+                </div>
+                <div class="table-search">
+                      <label for="searchInput">Cerca:</label>
+                      <input type="text" id="searchInput" class="search-input" placeholder="Cerca...">
+                </div>
+            </div>
+
+
+            <!-- Tabella Donatori -->
+            <div id="donatori" class="tabella-visibile">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stato</th>
+                            <th>Punti di donazione</th>
+                            <th>Numero di donazioni</th>
+                            <th>Quantità (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="yellow">
+                                <span class="info-trigger" data-modal="modalStorico">ℹ️</span>
+                            </td>
+                            <td>Ristorante Universitario Povo 1</td>
+                            <td>8</td>
+                            <td>13</td>
+                        </tr>
+                        <tr>
+                            <td class="green">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>BLM- ADIGE SALA</td>
+                            <td>3</td>
+                            <td>14</td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td class="red">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>Ristorante Universitario Mesiano</td>
+                            <td>1</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td class="green">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>Ristorante Universitario T. Gar</td>
+                            <td>10</td>
+                            <td>21</td>
+                        </tr>
+                        <tr>
+                            <td class="yellow">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>Ristorante Universitario 24 Maggio</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Tabella Riceventi -->
+            <div id="riceventi" class="tabella-nascosta">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stato</th>
+                            <th>Punti di ricezione</th>
+                            <th>Donazioni ricevute</th>
+                            <th>Quantità (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="green">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>                            
+                            <td>Associazione Amici dei Senzatetto ONLUS</td>
+                            <td>11</td>
+                            <td>23</td>
+                        </tr>
+                        <tr>
+                            <td class="yellow">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>Associazione  Amici Senzatetto Casa Baldè</td>
+                            <td>7</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td class="red">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>Ponte di Sostegno Educativo</td>
+                            <td>2</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td class="red">
+                                <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>Fondazione C. S. Il Sentiero - Trento</td>
+                            <td>6</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td class="green">
+                              <a href="pagina.html" style="text-decoration: none; color: inherit;">ℹ️</a>
+                            </td>
+                            <td>VILLA S. IGNAZIO</td>
+                            <td>1</td>
+                            <td>2</td>
+                          </tr>
+                    </tbody>
+            </div>
+        </div>
+
+    <script>
+        document.getElementById('selettoreTabella').addEventListener('change', function() {
+            const valore = this.value;
+            document.getElementById('donatori').className = (valore === 'donatori') ? 'tabella-visibile' : 'tabella-nascosta';
+            document.getElementById('riceventi').className = (valore === 'riceventi') ? 'tabella-visibile' : 'tabella-nascosta';
+          });
+    </script>
+</body>
+</html>

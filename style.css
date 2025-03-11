@@ -1,0 +1,506 @@
+/* ===============================
+   RESET BASE
+=============================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   BODY E FONT
+=============================== */
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+/* ===============================
+   HEADER
+=============================== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Parte sinistra: logo, pulsanti */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.site-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.vertical-separator {
+  width: 1px;
+  height: 30px;
+  background-color: #000;
+}
+
+/* Pulsanti di navigazione */
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Ogni pulsante di navigazione */
+.header-buttons a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  background-color: #fff;
+  text-decoration: none;
+  position: relative;
+  border: none; /* niente bordo */
+}
+
+/* Effetto underline arancione al passaggio e su link attivo */
+.header-buttons a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: orange;
+  transition: width 0.3s ease;
+}
+
+.header-buttons a:hover::after,
+.header-buttons a.active::after {
+  width: 100%;
+}
+
+/* ===============================
+   FILTRI
+=============================== */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  /* Spaziatura interna */
+  padding: 1rem;
+  align-items: center;
+}
+
+.text filter {
+  font-size: 80px;
+  font-weight: 600;
+  margin-right: 1rem;
+  color: #000000;
+}
+
+.filters label {
+  font-weight: 800;     /* Leggermente in grassetto */
+  margin-right: 0.3rem; /* Un po’ di spazio dopo l’etichetta */
+  color: #000000;          /* Colore testo più “soft” */
+}
+
+.filters select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.filters select:hover,
+.filters select:focus {
+  border-color: orange;
+}
+
+.apply-filters {
+  background: transparent;
+  border: 2px solid #f4a108; /* Arancione acceso */
+  color: #333;
+  padding: 0.5rem 1rem;
+  text-decoration: none; 
+  border-radius: 4px; 
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.apply-filters:hover {
+  background-color: #f4a108;
+  color: #fff;
+}
+
+/* ===============================
+   MAIN E MAPPA
+=============================== */
+main {
+  padding: 1rem;
+  margin-top: 20px; /* se vuoi spazio sotto l'header */
+}
+
+.map-and-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.map-container {
+  flex: 1;
+  text-align: center;
+  border: 1px solid black;
+  padding: 0.5rem;
+  border-radius: 6px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.map-container img {
+  display: block;
+  margin: 0 auto; 
+}
+
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto; /* Per centrare il contenitore */
+  padding: 20px;
+  box-sizing: border-box;
+}
+    
+.stat-box {
+  padding: 20px;
+  border-radius: 10px;
+  color: #333333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+    
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+    
+ /* Colori di sfondo personalizzati per i box */
+ .box-green {
+  background-color: #D4F4CC; /* un verde chiaro */
+}
+
+.box-purple {
+  background-color: #E8DBFF; /* un viola pastello */
+}
+
+.box-yellow {
+  background-color: #FFF0C9 !important; /* un giallo pastello */
+}
+
+.box-blue {
+background-color: #C9EBFF; /* un azzurro chiaro */
+}
+
+.box-title {
+  display: flex;          /* Li mette in riga */
+  align-items: center;    /* Li allinea verticalmente */
+  gap: 0.5rem;            /* Spazio tra l'icona e il testo */
+  margin-bottom: 0.5rem;  /* Distanzia il titolo dal paragrafo */
+}
+
+.box-title .icon {
+  width: 24px;   /* Regola la dimensione dell'icona */
+  height: 24px;  /* o lascia l'altezza auto se l'icona è un svg ben definito */
+  object-fit: contain;
+}
+
+.google-sheet-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.google-sheet-section h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.side-round-btn {
+  position: fixed;
+  top: 90%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f4a108;  /* Colore di sfondo, personalizzabile */
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  z-index: 9999;  /* Assicurati che il pulsante sia in primo piano */
+}
+
+.side-round-btn:hover {
+  transform: translateY(-50%) scale(1.05);
+  background-color: #e69a00;
+}
+/* Chat Sidebar */
+.chat-sidebar {
+  position: fixed;
+  top: 10%;
+  right: -320px; /* Inizialmente nascosta */
+  width: 300px;  /* Più piccola */
+  height: 80%;   /* Altezza ridotta rispetto al 100% */
+  background-color: #fff;
+  border-radius: 15px;  /* Bordi più stondati */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.4s ease;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Per mantenere i bordi stondati anche sui contenuti */
+}
+
+/* Quando la chat è aperta */
+.chat-sidebar.open {
+  right: 20px;  /* Appare fluttuante con un po' di margine dal bordo */
+}
+
+/* Header della chat */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f4a108;
+  color: #fff;
+  padding: 0.8rem;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+/* Area messaggi */
+.chat-messages {
+  flex: 1;
+  padding: 0.8rem;
+  overflow-y: auto;
+  background-color: #fafafa;
+}
+
+/* Footer della chat */
+.chat-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+/* Pulsante di chiusura (all'interno dell'header) */
+.close-chat {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Messaggi generali */
+.message {
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  word-wrap: break-word;
+  max-width: 60%; /* Dimensione più piccola rispetto al container */
+  border-radius: 16px; /* Bordi stondati */
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Messaggio Utente: allineato a destra con sfondo arancione chiaro */
+.user-message {
+  background-color: #FFE6B3; /* Arancione chiaro */
+  margin-left: auto;         /* Sposta a destra */
+  text-align: right;
+}
+
+/* Messaggio Bot (lasciamo lo stile precedente) */
+.bot-message {
+  background-color: #e6f3ff;
+  margin-right: auto;
+  text-align: left;
+}
+
+/* Footer della chat */
+.chat-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.chat-send-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #f4a108;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.chat-send-btn:hover {
+  background-color: #e69a00;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Spazio tra i grafici */
+  flex-wrap: wrap; /* Permette di andare a capo se lo schermo è piccolo */
+  width: 100%;
+  padding: 20px;
+}
+
+.chart-wrapper {
+  width: 50%; /* Occupa metà dello schermo */
+  min-width: 400px; /* Imposta una dimensione minima */
+  max-width:600px; /* Imposta una dimensione massima */
+}
+
+/* stile cubi */
+
+    /* Aggiungi questo stile CSS */
+    .metrics-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+      padding: 0 20px;
+    }
+
+    .metric-box {
+      border: 3px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-color: rgb(102, 247, 49);
+    }
+
+    .metric-box table {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .metric-box td {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .metric-box td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .metric-box td:last-child {
+      text-align: right;
+      font-weight: bold;
+      color: #333;
+    }
+
+
+
+    .metric-box2 {
+      border: 3px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-color: rgb(54, 162, 235);
+    }
+
+    .metric-box2 table {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .metric-box2 td {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .metric-box2 td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: #666;
+    }
+
+    .metric-box2 td:last-child {
+      text-align: right;
+      font-weight: bold;
+      color: #333;
+    }
+
+
+    .percentage {
+      text-align: center;
+      font-weight: bold;
+      color: #2c7da0;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid #eee;
+    }
+
+    .circle {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    
+    .green {
+      background-color: rgb(102, 247, 49);
+    }
+    
+    .blue {
+      background-color: rgb(54, 162, 235);
+    }
