@@ -6,13 +6,8 @@
     <script src="main.js" defer></script>
     <link rel="stylesheet" href="style.css"/>
     <link rel="icon" type="image/x-icon" href="/btf-databytes/icone/logo/btf.png">
-    <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-    <!-- jQuery (Select2 richiede jQuery) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Attività di Raccolta</title>
     <style>
@@ -52,7 +47,7 @@
     cursor: pointer;
   }
   
-  /* Icona (ℹ️) cliccabile per aprire il modale */
+  /* Icona I
   .info-trigger {
     cursor: pointer;
   }
@@ -62,13 +57,12 @@
     position: relative;
     margin: 1rem 0;
     padding: 0;
-    /* Se desideri un bordo continuo a sinistra: border-left: 2px solid #ddd; */
   }
   
   .timeline-item {
     position: relative;
     margin: 1rem 0;
-    padding-left: 40px; /* spazio a sinistra per il pallino */
+    padding-left: 40px; 
   }
   
   .timeline-icon {
@@ -77,13 +71,13 @@
     top: 0.8rem; /* regola per centrare il pallino verticalmente */
     width: 15px;
     height: 15px;
-    background-color: #f4a108; /* colore del pallino */
+    background-color: #f4a108; 
     border-radius: 50%;
     border: 2px solid #fff;
     box-shadow: 0 0 0 2px #f4a108;
   }
   
-  /* Linea tratteggiata/continua dietro i pallini */
+  /* Linea tratteggiata */
   .timeline-item::before {
     content: '';
     position: absolute;
@@ -91,7 +85,7 @@
     top: -1rem;
     width: 2px;
     height: calc(100% + 2rem);
-    background: #ccc; /* colore della linea */
+    background: #ccc; 
     z-index: -1;
   }
   
@@ -126,11 +120,10 @@
   =============================== */
   
   .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-    color: #000 !important;  /* Usa un colore scuro */
+    color: #000 !important; 
     background-color: transparent;
   }
-  
-  /* Se usi un wrapper custom per i select nativi (opzionale) */
+
   .custom-select-wrapper {
     position: relative;
     display: inline-block;
@@ -251,7 +244,7 @@
     transition: background-color 0.3s ease;
     padding: 0.5rem;
     border-radius: 4px;
-    flex: 1;                              /* Occupa lo spazio rimanente */
+    flex: 1;                              
 
   }
   
@@ -266,9 +259,9 @@
   .notifications-and-stats {
     display: grid;
     grid-template-columns: 50% 50%;
-    gap: 0;              /* Nessuno spazio orizzontale fra le 2 colonne */
-    width: 100vw;        /* Occupa tutta la viewport (se desideri) */
-    height: 40vh;       /* Se vuoi riempire l’altezza dello schermo */
+    gap: 0;              
+    width: 100vw;        
+    height: 40vh;       
     box-sizing: border-box;
   }
   
@@ -276,8 +269,8 @@
   .notifiche {
     background: #fff;
     box-sizing: border-box;
-    padding: 1rem;  /* Spazio interno */
-    overflow-y: auto; /* Se preferisci scroll se il contenuto è lungo */
+    padding: 1rem; 
+    overflow-y: auto; 
   }
   
   /* ===============================
@@ -285,7 +278,7 @@
   =============================== */
   .pulsante {
     background: transparent;
-    border: 2px solid #f4a108; /* Arancione acceso */
+    border: 2px solid #f4a108; 
     color: #333;
     padding: 0.5rem 1rem;
     border-radius: 4px;
@@ -409,7 +402,7 @@
           <div class="header-buttons">
             <a href="index.html" class="btn btn-orange btn-small ">Pagina iniziale</a>
             <a href="attivita.html" class="btn btn-orange btn-small active">Attività di raccolta</a>
-            <a href="confronto.html" class="btn btn-orange btn-small">Vai al confronto</a>
+            <a href="confronto.html" class="btn btn-orange btn-small">Confronto dati</a>
           </div>
         </div>
     </header>
@@ -488,7 +481,7 @@
           <img src="/btf-databytes/icone/Ai/one.png" alt="Icona Top Donatore" />
         </div>
         <h4>Donatore più attivo</h4>
-        <p>Ristorante La Buona Tavola</p>
+        <p>Risto 3 Povo 1</p>
       </div>
   
       <div class="stat-box">
