@@ -4,9 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pagina Iniziale - BTF</title>
-  <!-- Foglio di stile esterno -->
   <link rel="stylesheet" href="style.css"/>
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="main.js" defer></script> 
@@ -14,7 +12,6 @@
 </head>
 <body>
   <header>
-    <!-- Parte sinistra: Logo, Pulsanti -->
     <div class="header-left">
       <div class="logo">
         <img src="/btf-databytes/icone/logo/btf.png" alt="BTF Logo" />
@@ -22,12 +19,11 @@
       <div class="header-buttons">
         <a href="index.html" class="btn btn-orange btn-small active">Pagina iniziale</a>
         <a href="attivita.html" class="btn btn-orange btn-small">Attività di raccolta</a>
-        <a href="confronto.html" class="btn btn-orange btn-small">Vai al confronto</a>
+        <a href="confronto.html" class="btn btn-orange btn-small">Confronto dati</a>
       </div>
     </div>
   </header>
 
-  <!-- FILTRI -->
   <div class="filters">
     <label for="regionSelect">Regione:</label>
     <select id="regionSelect" title="Seleziona Regione">
@@ -67,21 +63,20 @@
     <label for="timeframeEnd">A:</label>
     <input type="date" id="timeframeEnd">
 
-    <!-- Bottone "Applica filtri" -->
     <a href="#myChart" class="apply-filters" id="applyFiltersBtn">Applica filtri</a>
 
   <main>
-    <!-- Sezione con la mappa e le stat-box -->
     <section class="map-and-stats">
       <div class="map-container">
         <img src="/btf-databytes/ita-scale-true.png" usemap="#italy-map" alt="Mappa d'Italia" width="474">
         <map name="italy-map">
-          <!-- Esempio poligono generato dal tool -->
           <area shape="poly"
-                coords="156,22,157,27,155,33,157,40..."
+                coords="157,20,155,29,156,36,160,42,155,45,159,50,158,57,154,61,158,67,166,75,173,79,180,78,184,72,189,67,197,69,198,61,204,56,207,49,206,41,209,34,214,32,220,31,222,23,217,16,217,9,211,8,205,15,196,13,189,13,180,19,171,23,164,19"
                 alt="Trentino"
                 title="Trentino"
                 href="trentino.html">
+          <area target="" alt="Veneto" title="Veneto" href="veneto.html" coords="225,29,232,30,237,33,230,39,226,43,222,49,223,57,224,63,224,68,228,73,235,76,240,72,245,76,247,82,236,90,229,88,225,93,218,95,217,106,221,109,224,114,227,118,216,116,210,120,203,118,198,122,192,121,185,117,179,114,174,110,170,106,164,101,160,94,161,87,164,80,171,78,178,80,186,72,193,67,199,66,197,57,205,55,207,48,207,41,211,35,219,34" shape="poly">
+          <area target="" alt="Lombardia" title="Lombardia" href="lombardia.html" coords="117,36,119,42,124,47,130,48,132,42,139,44,141,50,146,54,144,40,144,33,146,27,151,34,158,40,156,49,155,56,156,66,157,72,166,75,164,82,162,88,162,95,164,101,170,106,175,110,182,114,186,119,176,119,168,120,162,116,156,120,150,119,145,114,135,111,129,112,123,108,118,110,113,111,110,116,111,121,109,126,103,121,94,114,89,111,86,105,85,99,90,97,96,93,94,86,92,79,91,72,91,65,94,59,98,64,102,69,108,70,106,62,106,56,114,49" shape="poly">
         </map>
       </div>
       <div class="stat-grid">
@@ -124,7 +119,7 @@
       </div>
     </section>
 
-    <!-- Bottone rotondo Chat AI -->
+    <!-- Bottone Chat AI -->
     <button class="side-round-btn" id="sideRoundBtn">
       <img src="/btf-databytes/icone/Ai/chat.png" alt="Chat Bot Icona" style="width: 30px; height: 30px;" />
     </button>
@@ -157,10 +152,6 @@
   </div>
 
 <script>
-// ===========================
-// 1) DATI PER CATEGORIE (Primi, Secondi, ... )
-// mensaCategoryData[mensa][categoria] = array di 12 numeri (Gen-Dic)
-// ===========================
 const mensaCategoryData = {
   "Povo_1": {
     "Primi":   [10, 5, 15,  3, 12,  8,  9, 20, 22, 12,  6, 14],
@@ -190,13 +181,8 @@ const mensaCategoryData = {
     "Varie":   [ 2,  8,  3, 10,  5,  6, 12,  3, 14,  0,  8, 10]
   }
 };
-
-// Array dei 12 mesi
 const allMonths = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
 
-/**
- * Ritorna fromIndex..toIndex (0..11) in base a date input
- */
 function calcolaRangeMesi(dataInizioStr, dataFineStr){
   if(!dataInizioStr || !dataFineStr) return { fromIndex:0, toIndex:11 };
   const startD = new Date(dataInizioStr);
@@ -210,10 +196,6 @@ function calcolaRangeMesi(dataInizioStr, dataFineStr){
   return { fromIndex: si, toIndex: ei };
 }
 
-/**
- * Per la ciambella: calcoliamo la SOMMA di ogni categoria
- * nel range fromIndex..toIndex, restituendo un array di 7 numeri.
- */
 function calcolaSommaCategorie(mensa, fromIndex, toIndex){
   const categories = ["Primi","Secondi","Contorni","Insalata","Salumi","Pane","Varie"];
   if(!mensaCategoryData[mensa]) {
@@ -228,10 +210,6 @@ function calcolaSommaCategorie(mensa, fromIndex, toIndex){
   });
 }
 
-/**
- * Per la linea: calcoliamo per ogni mese la somma di TUTTE le categorie
- * Quindi otteniamo array da fromIndex..toIndex di lunghezza (es. 4 se 4 mesi).
- */
 function calcolaSommaMensile(mensa, fromIndex, toIndex){
   if(!mensaCategoryData[mensa]) {
     // array di 0 per ogni mese
@@ -250,7 +228,6 @@ function calcolaSommaMensile(mensa, fromIndex, toIndex){
   return results;
 }
 
-// ============ GRAFICI =============
 let chartDonut  = null; // ciambella
 let chartLine   = null; // line
 
@@ -329,7 +306,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     const toD   = document.getElementById("timeframeEnd").value;
     const { fromIndex, toIndex } = calcolaRangeMesi(fromD, toD);
 
-    // 1) Calcola ciambella => 7 numeri, uno per ogni cat
+    // 1) Calcola ciambella 
     const catLabels = ["Primi","Secondi","Contorni","Insalata","Salumi","Pane","Varie"];
     if(!mensa){
       // Se nessuna mensa
@@ -338,7 +315,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
       return;
     }
     const catSums = calcolaSommaCategorie(mensa, fromIndex, toIndex);
-    // 2) Calcola line => array di (toIndex-fromIndex+1) numeri
+    // 2) Calcola line 
     const monthlySums = calcolaSommaMensile(mensa, fromIndex, toIndex);
     const labelMesi = allMonths.slice(fromIndex, toIndex+1);
 
