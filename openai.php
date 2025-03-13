@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
 // Inserisci la tua chiave API qui (senza spazi o caratteri extra)
-$api_key = "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";
+$api_key = "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";
 
 // Recupera il messaggio inviato dal frontend (JSON nel body della richiesta)
 $request = json_decode(file_get_contents('php://input'), true);
