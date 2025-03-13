@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
 // Inserisci la tua chiave API qui (senza spazi o caratteri extra)
-$api_key = "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";
+$api_key = "";
 
 // Recupera il messaggio inviato dal frontend (JSON nel body della richiesta)
 $request = json_decode(file_get_contents('php://input'), true);
@@ -13,7 +13,7 @@ $message = isset($request['message']) && !empty(trim($request['message']))
 
 // Prepara i dati da inviare all'API di OpenAI
 $data = array(
-    "model" => "gpt-4o-mini", // oppure "gpt-3.5-turbo" se preferisci
+    "model" => "gpt-4o-mini",
     "messages" => array(
          array("role" => "system", "content" => "Rispondi in modo chiaro e preciso."),
          array("role" => "user", "content" => $message)
